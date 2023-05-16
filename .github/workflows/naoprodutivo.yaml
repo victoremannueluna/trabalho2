@@ -1,4 +1,4 @@
-name: CICD produtivo
+name: CICD não produtivo
 
 on:
   pull_request:
