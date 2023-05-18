@@ -43,9 +43,9 @@ jobs:
             StrictHostKeyChecking no
           END
         env:
-          SSH_USER: ${{ secrets.GOOGLE_CLOUD_SSH_USER }}
-          SSH_KEY: ${{ secrets.GOOGLE_CLOUD_SSH_KEY }}
-          SSH_HOST: ${{ secrets.GOOGLE_CLOUD_SSH_HOST }}
+          SSH_USER: ${{ secrets.GCP_SSH_USER }}
+          SSH_KEY: ${{ secrets.GCP_SSH_KEY }}
+          SSH_HOST: ${{ secrets.GCP_SSH_HOST }}
       
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -71,9 +71,9 @@ jobs:
         run: npm run build
       
       - name: Deploy the application
-        run: 
-            ssh google-cloud 'sudo systemctl stop react-app'
-            ssh google-cloud 'sudo rm -rf /app/react-app'
-            cp -r build google-cloud:/home/github/react-app
-            ssh google-cloud 'sudo mv /home/github/react-app/app/react-app'
-            ssh google-cloud 'sudo systemctl start react-app'
+        run: | 
+            ssh google-cloud sudo systemctl stop react-app
+            ssh google-cloud sudo rm -rf react-app/*
+            scp -r build google-cloud:/root/app-build
+            ssh google-cloud sudo mv app-build/build/* react-app/
+            ssh google-cloud sudo systemctl start react-app
