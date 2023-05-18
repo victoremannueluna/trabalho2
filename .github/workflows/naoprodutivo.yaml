@@ -36,7 +36,7 @@ jobs:
           echo "$SSH_KEY" > ~/.ssh/google-cloud.key
           chmod 600 ~/.ssh/google-cloud.key
           cat >>~/.ssh/config <<END
-          Host google-cloud
+            Host google-cloud
             HostName $SSH_HOST
             User $SSH_USER
             IdentityFile ~/.ssh/google-cloud.key
@@ -69,9 +69,8 @@ jobs:
       
       - name: Deploy the application
         run: | 
-            echo $SSH_HOSTS
-            ssh google-cloud sudo systemctl stop react-app
-            ssh google-cloud sudo rm -rf react-app/*
-            scp -r build google-cloud:/root/app-build
-            ssh google-cloud sudo mv app-build/build/* react-app/
-            ssh google-cloud sudo systemctl start react-app
+            ssh ${{ secrets.GCP_SSH_USER }}@${{ secrets.GCP_SSH_HOST }} sudo systemctl stop react-app
+            ssh ${{ secrets.GCP_SSH_USER }}@${{ secrets.GCP_SSH_HOST }} sudo rm -rf react-app/*
+            scp -r build ${{ secrets.GCP_SSH_USER }}@${{ secrets.GCP_SSH_HOST }}:/root/app-build
+            ssh ${{ secrets.GCP_SSH_USER }}@${{ secrets.GCP_SSH_HOST }} sudo mv app-build/build/* react-app/
+            ssh ${{ secrets.GCP_SSH_USER }}@${{ secrets.GCP_SSH_HOST }} sudo systemctl start react-app
